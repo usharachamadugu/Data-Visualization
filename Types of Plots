@@ -1,0 +1,198 @@
+
+
+library(ggplot2)
+
+data(mpg)
+
+setwd("D:/AP/Dtrees")
+
+cust_data = read.csv("Churn.csv")
+
+
+str(cust_data)
+
+### cont. variables 
+
+hist(cust_data$Day.Mins, breaks = 40) ## breaks will decide the number of bars 
+
+boxplot(cust_data$Day.Mins)
+
+summary(cust_data$Day.Mins)
+
+### one discrete variable 
+
+cust_data$Churn = as.factor(cust_data$Churn)
+
+barplot(table(cust_data$Churn), col = c("blue", "orange"))
+
+a =  pie(table(cust_data$Churn), col = c("blue", "orange"), main = "Pie of Customer Churn")
+
+ggsave(a, "pichart.jpg")
+### two dimensional 
+
+str(cust_data)
+
+plot(cust_data$Day.Mins, cust_data$Night.Mins)
+
+plot(cust_data$Day.Mins, cust_data$Day.Charge)
+
+cor(cust_data$Day.Mins, cust_data$Night.Mins)
+### Cont., discrete variable 
+
+boxplot( cust_data$Day.Mins ~ cust_data$Churn, col = c("red","green"), main = "Distribution of Day usage b/w Churn and Non-Churn customers")
+
+### two Disc. variables 
+
+cust_data$Intl.Plan = as.factor(cust_data$Intl.Plan)
+
+barplot( table(cust_data$Churn, cust_data$Intl.Plan))
+
+library(ggplot2)
+
+## one dimensional plots 
+
+## 1. Cont. variable 
+
+data(mpg)
+
+mpg = as.data.frame((mpg))
+
+head(mpg)
+
+## 1. Histogram 
+
+ggplot(mpg , aes(hwy) ) + geom_histogram(bins = 7)
+
+ggplot(cust_data, aes(Day.Mins)) + geom_histogram()
+
+## 2. Boxplot 
+
+ggplot(mpg, aes(1,hwy)) + geom_boxplot()
+
+### two dimensional 
+
+# 1. two cont. variables 
+
+ggplot(mpg, aes(cty, hwy)) + geom_point()
+
+## 2. one cont. and one discrete variable 
+
+ggplot(mpg, aes(drv, hwy)) + geom_boxplot()
+
+ggplot(mpg, aes(class, hwy)) + geom_boxplot()
+
+mpg$cyl_s = as.factor(mpg$cyl)
+
+ggplot(mpg, aes(cyl_s, hwy)) + geom_boxplot()
+
+## two factor variables 
+
+ggplot(mpg, aes(class, fill = cyl_s)) + geom_bar()
+
+ggplot(mpg, aes(class , fill = drv)) + geom_bar()
+
+ggplot(mpg, aes(manufacturer, fill = class)) + geom_bar()
+
+### multidimensional plots 
+
+## First start with a scatterplot 
+
+ggplot(mpg, aes(cty, hwy, col = class, shape = drv)) + geom_point()
+
+head(mpg)
+ggplot(mpg,aes(cty, hwy, col = class, shape = drv, size = displ)) + geom_point()
+
+### 
+
+a = ggplot(mpg,aes(cty, hwy, col = class, shape = drv, size = cyl)) + geom_point()
+
+
+### facets options 
+
+mpg$year = as.factor(mpg$year)
+
+a + facet_grid( year ~ .)
+a + facet_grid( . ~ year)
+
+## facets with more than one variable 
+
+### cust_data 
+
+ggplot(cust_data, aes(Day.Mins, Night.Mins, col = Churn)) + geom_point()
+
+## take a sample and plot the same graph 
+
+library(dplyr)
+install.packages(dplyr)
+
+cust_samp = sample_frac( cust_data, 0.2)
+
+ids = sample(nrow(cust_data), nrow(cust_data)*0.2)
+
+cust_samp = cust_data[ids, ]        
+
+
+ggplot(cust_samp, aes(Day.Mins, Night.Mins, col = Churn, shape = Intl.Plan)) + geom_point()
+
+
+ggplot(cust_samp, aes(Day.Mins, Night.Mins, col = Churn, shape = Intl.Plan, size = CustServ.Calls)) + geom_point()
+
+head
+
+### Use a for the enhancements 
+
+b = a + coord_cartesian(xlim =c(15, 25) , ylim =c(15, 30) )
+c = b + xlab("City Mileage") + ylab("Highway Mileage") + ggtitle("City Vs Higway mileage by class and drive type ")
+
+### themes 
+
+c + theme_classic()
+
+
+#### Bar chart
+
+f = ggplot(mpg, aes(class, fill = drv) ) + geom_bar()
+f  + theme_classic()
+
+f + theme_bw() + geom_text( stat = "count" )
+
+tab = table(mpg$class, mpg$drv)
+tab = table(mpg$class, mpg$drv)
+
+tab = as.data.frame(tab)
+
+tab
+
+
+tab1 = table(mpg$class)
+
+tab1 = as.data.frame(tab1)
+
+ggplot(tab1, aes(x = Var1, y = Freq)) +
+  geom_bar(fill = "#0073C2FF", stat = "identity") +
+  geom_text(aes(label = Freq), vjust = -0.3) 
+
+
+t = ggplot(tab, aes(x = Var1, y = Freq, fill = Var2)) +
+  geom_bar( stat = "identity") +
+  geom_text(aes(label = Freq), vjust = -0.3)
+
+## Legend positions 
+
+t + theme(legend.position = "bottom")
+### Dodged and Fill bar charts 
+
+data(mpg)
+
+ggplot( mpg, aes(class, fill=drv)) + geom_bar()
+
+## Dodged bar chart 
+
+ggplot(mpg, aes(class, fill = drv)) + geom_bar(position = "dodge")
+
+ggplot(mpg, aes(class, fill = drv)) + geom_bar(position = "fill")
+
+## Fill bar chart 
+
+gggplot(cust_data, aes(Intl.Plan, fill = Churn)) + geom_bar(position = "fill")
+
